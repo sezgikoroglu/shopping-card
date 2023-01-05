@@ -1,0 +1,64 @@
+
+    .navbar {
+        position: fixed;
+        background-color: rgb(231, 226, 221);
+        
+        top: 0;
+        right: 0;
+        left: 0;
+        height: 60px;
+      
+        .container-fluid {
+            padding: 0 1.5rem;
+            .basket-logo {
+                img {
+                    background-color: rgb(231, 226, 221);
+                    ;
+                    width: 40px;
+                    height: 40px;
+                }
+            }
+        }
+    }
+    
+    header{
+        min-height: calc(100vh - 60px);
+        background-image: url(./images/hero-bcg.jpeg);
+        background-position-x: center;
+        background-position-y: center;
+        background-size: cover;
+        background-attachment: initial;
+        background-origin: initial;
+        background-clip: initial;
+        background-color: initial;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .banner{
+            text-align: center;
+            background: rgba(255, 255, 255, 0.8);
+            display: inline-block;
+            padding: 2rem;
+            .banner-title{
+                font-weight: bold;
+                font-family: "Lato", sans-serif;
+                font-size: 3.4rem;
+                text-transform: uppercase;
+                letter-spacing: var(--mainSpacing);
+                margin-bottom: 3rem;
+            }
+            .banner-btn{
+                padding: 1rem 3rem;
+                text-transform: uppercase;
+                letter-spacing:0.1rem;
+                font-size: 1rem;
+                background:#f09d51;;
+                color:  #222;;
+                border: 1px solid var(--primaryColor);
+                transition: all 0.3s linear;;
+                cursor: pointer;
+            }
+        }
+    }
+
+
