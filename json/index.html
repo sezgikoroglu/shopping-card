@@ -21,17 +21,17 @@
                 data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="offcanvas offcanvas-start " tabindex="-1" id="offcanvasDarkNavbar"
+            <div class="offcanvas offcanvas-start "  tabindex="-1" id="offcanvasDarkNavbar"
                 aria-labelledby="offcanvasDarkNavbarLabel">
                 <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Dark offcanvas</h5>
+                    <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel" >E Commerce</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
                         aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Home</a>
+                            <a class="nav-link active" aria-current="page" onclick="Filter.Actions.reset()" href="#" >Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Link</a>
@@ -39,25 +39,43 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                                 aria-expanded="false">
-                                Dropdown
+                                Categories
                             </a>
                             <ul class="dropdown-menu dropdown-menu-dark">
-                                <li><a class="dropdown-item" href="#">Action</a></li>
-                                <li><a class="dropdown-item" href="#">Another action</a></li>
+                                <li><a class="dropdown-item" href="#">Smartphones</a></li>
+                                <li><a class="dropdown-item" href="#">Laptops</a></li>
+                                <li><a class="dropdown-item" href="#">Fragrances</a></li>
+                                <li><a class="dropdown-item" href="#">Skincare</a></li>
+                                <li><a class="dropdown-item" href="#">Groceries</a></li>
+                                <li><a class="dropdown-item" href="#">Home Decoration</a></li>
+                                <li><a class="dropdown-item" href="#">Furniture</a></li>
+                                <li><a class="dropdown-item" href="#">Tops</a></li>
+                                <li><a class="dropdown-item" href="#">Womens dresses</a></li>
+                                <li><a class="dropdown-item" href="#">Womens Smartphones</a></li>
+                                <li><a class="dropdown-item" href="#">Men shirts</a></li>
+                                <li><a class="dropdown-item" href="#">Mens shoes</a></li>
+                                <li><a class="dropdown-item" href="#">Mens watches</a></li>
+                                <li><a class="dropdown-item" href="#">Womens watches</a></li>
+                                <li><a class="dropdown-item" href="#">Womens bags</a></li>
+                                <li><a class="dropdown-item" href="#">Womens jewellery</a></li>
+                                <li><a class="dropdown-item" href="#">Sunglasses</a></li>
+                                <li><a class="dropdown-item" href="#">Automotive</a></li>
+                                <li><a class="dropdown-item" href="#">Motorcycle</a></li>
+                                <li><a class="dropdown-item" href="#">Lighting</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                <!-- <li><a class="dropdown-item" href="#"  onclick="Filter.Actions.reset()">Something else here</a></li> -->
                             </ul>
                         </li>
                     </ul>
-                    <form class="d-flex mt-3" role="search">
+                    <!-- <form class="d-flex mt-3" role="search">
                         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                         <button class="btn btn-success" type="submit">Search</button>
-                    </form>
+                    </form> -->
                 </div>
             </div>
-            <a class="navbar-brand" href="#">E-Commerce</a>
+            <a class="navbar-brand" onclick="Filter.Actions.reset()" href="#" >E-Commerce</a>
             <div class="basket-logo" onclick="Filter.Actions.showCart()">
                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-cart-plus-fill" viewBox="0 0 16 16">
                     <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM9 5.5V7h1.5a.5.5 0 0 1 0 1H9v1.5a.5.5 0 0 1-1 0V8H6.5a.5.5 0 0 1 0-1H8V5.5a.5.5 0 0 1 1 0z"/>

@@ -7,13 +7,18 @@ var Filter={
         clearCart:document.querySelector(".clear-cart"),
         cart:document.querySelector(".cart"),
         total:document.querySelector(".cart-total"),
-      
+        dropDownItem:document.querySelectorAll(".dropdown-item"),
+        header:document.querySelector("header"),
+        loadMore:document.querySelector(".load-more"),
+        offCanvas:document.querySelector(".offcanvas"),
+        
     },
     Apis:{
         products:"https://dummyjson.com/products",
+        categories:"https://dummyjson.com/products/category/"
     },
     Status:{
-        amount:[],
+        categories:[],
         cards:[],
         newProduct:[],
         products:[],
@@ -22,6 +27,7 @@ var Filter={
     },
     Actions:{
         init:()=>{
+
             Filter.Actions.getProducts(Filter.Apis.products);
             const cardlist=JSON.parse(localStorage.getItem("cardlist"));
             if (!cardlist){
@@ -29,6 +35,24 @@ var Filter={
             }else{
                 Filter.Status.cards=cardlist;
             }
+        },
+       
+        reset:()=>{
+            Filter.Actions.addToHTML(Filter.Status.products);
+            Filter.Elements.header.style.display="flex";
+            Filter.Elements.loadMore.style.display="flex";
+
+        },
+        firstCharUpper:(x)=>{
+            var text=x.replaceAll("-", " ");
+            var firstChar=text.charAt(0).toLocaleUpperCase();
+            text=firstChar+text.substring(1);
+            return text;   
+        },
+        allCharLower:(x)=>{
+            var text=x.replaceAll(/\s+/g, "-");
+            text=text.toLowerCase();
+            return text;  
         },
 
         loadMore:()=>{
@@ -134,6 +158,19 @@ var Filter={
            
            
         },
+        ctgHtml:()=>{
+            Filter.Elements.header.style.display="none";
+            Filter.Elements.loadMore.style.display="none";
+
+        },
+        selectCtg:(e)=>{
+            Filter.Actions.ctgHtml()
+            var ctg=e.target.parentElement.innerText;
+            ctg=(ctg.replaceAll(/\s+/g, "-")).toLowerCase()
+            var url=Filter.Apis.categories+ctg
+            Filter.Actions.getCategory(url)
+
+        },
 
         closeCard:()=>{
            
@@ -142,7 +179,7 @@ var Filter={
         },
 
         mouseOver:(item)=>{
-            console.log(item)
+           
             item.children[1].style.transform="none";
             item.children[0].classList.add("transparan")
         },
@@ -174,6 +211,17 @@ var Filter={
             });
             
         },
+
+        
+        getCategory:(url)=>{
+            Filter.Status.categories=[];
+            fetch(url)
+            .then(res => res.json())
+            .then(res=>{
+                    Filter.Status.categories=res.products;
+                    Filter.Actions.addToHTML(Filter.Status.categories);
+            });
+        },
         getProducts:(url)=>{
             Filter.Status.newProduct=[]
             fetch(url)
@@ -189,4 +237,7 @@ var Filter={
        
     }
 }
+Filter.Elements.dropDownItem.forEach(item=>{
+    item.addEventListener("click",Filter.Actions.selectCtg)
+})
 Filter.Actions.init()
