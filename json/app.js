@@ -4,15 +4,16 @@ var Filter={
         cardOverlay:document.querySelector(".card-overlay"),
         closeCrt:document.querySelector(".close-cart"),
         cartContent:document.querySelector(".cart-content"),
-        //cartItem:document.querySelector(".cart-item"),
+        clearCart:document.querySelector(".clear-cart"),
         cart:document.querySelector(".cart"),
-
+        total:document.querySelector(".cart-total"),
+      
     },
     Apis:{
         products:"https://dummyjson.com/products",
     },
     Status:{
-        local:[],
+        amount:[],
         cards:[],
         products:[],
         limit:30,
@@ -42,40 +43,55 @@ var Filter={
             Filter.Actions.getProducts(url);
         },
 
-        addAmount:(item)=>{
+        showCart:()=>{
+            console.log("fjfkj")
+            Filter.Elements.cardOverlay.style.visibility = "visible"
+            Filter.Elements.cart.style.transform = "none";
+        },
+
+        addAmount:(item,index)=>{
            
             var amount=Number(item.parentElement.children[1].innerText);
             amount=(amount+1).toString();
             item.parentElement.children[1].innerText=amount;
-            
+            Filter.Status.cards[index].amount=amount;
+            localStorage.setItem("cardlist",JSON.stringify(Filter.Status.cards))
+            Filter.Actions.addCart(Filter.Status.cards)
+          
         },
 
-        reduceAmount:(item)=>{
+        reduceAmount:(item,index)=>{
             var amount=Number(item.parentElement.children[1].innerText);
             amount=(amount-1).toString();
             if (amount>=1){
-            item.parentElement.children[1].innerText=amount};
+            item.parentElement.children[1].innerText=amount
+            Filter.Status.cards[index].amount=amount;
+            localStorage.setItem("cardlist",JSON.stringify(Filter.Status.cards))
+            Filter.Actions.addCart(Filter.Status.cards)
+        };
         },
 
         remove:(item,index)=>{
             
             Filter.Status.cards.splice(index,1)
             localStorage.setItem("cardlist",JSON.stringify(Filter.Status.cards))
-            Filter.Elements.cartContent.innerHTML="";
-            Filter.Status.cards.forEach((item,index) => {
-                Filter.Actions.addCart(item,index)
-           })
-
+            Filter.Actions.addCart(Filter.Status.cards)
         },
 
-        addCart:(item,index)=>{
-            
-           
+        clearCart:()=>{
+            Filter.Status.cards=[];
+            localStorage.setItem("cardlist",JSON.stringify(Filter.Status.cards))
+            Filter.Actions.closeCard();
+        },
+
+        addCart:(array)=>{
+            var total=0;
             Filter.Elements.cardOverlay.style.visibility = "visible"
             Filter.Elements.cart.style.transform = "none";
-            
-            var div=`
-            
+            Filter.Elements.cartContent.innerHTML="";
+            Filter.Status.cards.forEach((item,index)=>{
+                
+                var div=`
                 <div class="cart-item">
                     <img src="${item.thumbnail}" alt="product">
                     <div class="price">
@@ -84,40 +100,40 @@ var Filter={
                         <span class="remove-item" data-id="2" onclick=Filter.Actions.remove(this,${index})>remove</span>
                     </div>
                     <div class="amount" >
-                        <svg onclick=Filter.Actions.addAmount(this) xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up" viewBox="0 0 16 16">
+                        <svg onclick=Filter.Actions.addAmount(this,${index}) xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/>
                           </svg>
-                        <p class="item-amount">1</p>
-                        <svg onclick=Filter.Actions.reduceAmount(this) xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
+                        <p class="item-amount">${item.amount}</p>
+                        <svg onclick=Filter.Actions.reduceAmount(this,${index}) xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
                           </svg>
                     </div>
                 </div>
-
             `
+           
+            total+=(Number(item.price)*Number(item.amount));
             Filter.Elements.cartContent.innerHTML+=div;
+            })
+            Filter.Elements.total.innerText=total;
+           
         },
         controlCart:(item,index)=>{
             
            var boolean=true;
-          
            Filter.Status.cards.forEach(x=>{
                 if(x.id == item.id){
                     boolean=false;
                 }
            })
-
            if(boolean){
             var i=Number(item.id)-1
             var product=Filter.Status.products[i];
             Filter.Status.cards.push(product);
-            
-            var cardlist=Filter.Status.cards;
-            localStorage.setItem("cardlist",JSON.stringify(cardlist))
-            Filter.Elements.cartContent.innerHTML="";
-            Filter.Status.cards.forEach((item,index) => {
-                Filter.Actions.addCart(item,index)
-           })
+            Filter.Status.cards.forEach(item=>{
+                item.amount=1;
+            })
+            localStorage.setItem("cardlist",JSON.stringify(Filter.Status.cards))
+            Filter.Actions.addCart(Filter.Status.cards)
 
            }else{
             alert("Ürün zaten sepetinizde bulunmaktadır.")
@@ -126,7 +142,7 @@ var Filter={
            
         },
 
-        closeCard:(item)=>{
+        closeCard:()=>{
            
             Filter.Elements.cardOverlay.style.visibility = "hidden"
             Filter.Elements.cart.style.transform =" translateX(100%)"
