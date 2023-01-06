@@ -21,6 +21,16 @@ var Filter={
     Actions:{
         init:()=>{
             Filter.Actions.getProducts(Filter.Apis.products);
+            const cardlist=JSON.parse(localStorage.getItem("cardlist"));
+            if (!cardlist){
+                localStorage.setItem("cardlist",JSON.stringify([]))
+            }else{
+                Filter.Status.cards=cardlist;
+                Filter.Status.cards.forEach((item,index) => {
+                    Filter.Actions.addCart(item,index)
+                   
+                });
+            }
         },
 
         loadMore:()=>{
@@ -47,22 +57,31 @@ var Filter={
             item.parentElement.children[1].innerText=amount};
         },
 
+        remove:(item,index)=>{
+            
+            Filter.Status.cards.splice(index,1)
+            localStorage.setItem("cardlist",JSON.stringify(Filter.Status.cards))
+            Filter.Elements.cartContent.innerHTML="";
+            Filter.Status.cards.forEach((item,index) => {
+                Filter.Actions.addCart(item,index)
+           })
+
+        },
+
         addCart:(item,index)=>{
-            // console.log("hello")
-            // var index=item.id
+            
+           
             Filter.Elements.cardOverlay.style.visibility = "visible"
             Filter.Elements.cart.style.transform = "none";
-            var product=Filter.Status.products[index];
-            Filter.Status.cards.push(product);
             
             var div=`
             
                 <div class="cart-item">
-                    <img src="${product.thumbnail}" alt="product">
+                    <img src="${item.thumbnail}" alt="product">
                     <div class="price">
-                        <h4>${product.title}</h4>
-                        <h5>${product.price}$</h5>
-                        <span class="remove-item" data-id="2">remove</span>
+                        <h4>${item.title}</h4>
+                        <h5>${item.price}$</h5>
+                        <span class="remove-item" data-id="2" onclick=Filter.Actions.remove(this,${index})>remove</span>
                     </div>
                     <div class="amount" >
                         <svg onclick=Filter.Actions.addAmount(this) xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up" viewBox="0 0 16 16">
@@ -79,7 +98,7 @@ var Filter={
             Filter.Elements.cartContent.innerHTML+=div;
         },
         controlCart:(item,index)=>{
-           console.log(item.id);
+            
            var boolean=true;
           
            Filter.Status.cards.forEach(x=>{
@@ -87,9 +106,19 @@ var Filter={
                     boolean=false;
                 }
            })
+
            if(boolean){
-            Filter.Status.cards.push(Filter.Status.products[index])
-            Filter.Actions.addCart(item,index)
+            var i=Number(item.id)-1
+            var product=Filter.Status.products[i];
+            Filter.Status.cards.push(product);
+            
+            var cardlist=Filter.Status.cards;
+            localStorage.setItem("cardlist",JSON.stringify(cardlist))
+            Filter.Elements.cartContent.innerHTML="";
+            Filter.Status.cards.forEach((item,index) => {
+                Filter.Actions.addCart(item,index)
+           })
+
            }else{
             alert("Ürün zaten sepetinizde bulunmaktadır.")
            }

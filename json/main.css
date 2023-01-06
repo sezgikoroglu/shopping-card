@@ -256,6 +256,10 @@ section .load-more:hover {
 }
 .card-overlay .cart .cart-content .cart-item .price .remove-item {
   color: gray;
+  cursor: pointer;
+}
+.card-overlay .cart .cart-content .cart-item .price .remove-item:hover {
+  color: #222;
 }
 .card-overlay .cart .cart-content .cart-item .amount {
   position: absolute;

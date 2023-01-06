@@ -171,6 +171,10 @@ section{
                     }
                     .remove-item{
                         color: gray;
+                        cursor: pointer;
+                    &:hover{
+                        color: #222;
+                    }
                     }
                 }
                 .amount{
