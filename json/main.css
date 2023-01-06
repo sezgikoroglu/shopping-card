@@ -51,10 +51,8 @@ main, header, aside, img {
 .navbar .container-fluid {
   padding: 0 1.5rem;
 }
-.navbar .container-fluid .basket-logo img {
-  background-color: rgb(231, 226, 221);
-  width: 40px;
-  height: 40px;
+.navbar .container-fluid .basket-logo svg {
+  cursor: pointer;
 }
 
 header {
@@ -82,7 +80,7 @@ header .banner .banner-title {
   font-family: "Lato", sans-serif;
   font-size: 3.4rem;
   text-transform: uppercase;
-  letter-spacing: var(--mainSpacing);
+  letter-spacing: 0.1rem;
   margin-bottom: 3rem;
 }
 header .banner .banner-btn {
@@ -92,9 +90,12 @@ header .banner .banner-btn {
   font-size: 1rem;
   background: #f09d51;
   color: #222;
-  border: 1px solid var(--primaryColor);
+  border: 1px solid #f09d51;
   transition: all 0.3s linear;
   cursor: pointer;
+}
+header .banner .banner-btn:hover {
+  background: none;
 }
 
 section {
@@ -126,6 +127,7 @@ section .product-center article .img-container {
   overflow: hidden;
 }
 section .product-center article .img-container img {
+  cursor: pointer;
   display: block;
   width: 100%;
   min-height: 12rem;
@@ -143,6 +145,7 @@ section .product-center article .img-container .bag-btn {
   letter-spacing: 0.1rem;
   font-weight: bold;
   transition: all 0.3s linear;
+  transform: translateX(101%);
   display: flex;
   align-items: center;
   gap: 5px;
@@ -189,6 +192,11 @@ section .load-more {
 section .load-more:hover {
   background-color: #f09d51;
   color: white;
+}
+
+.transparan {
+  opacity: 0.4;
+  filter: alpha(opacity=40);
 }
 
 .card-overlay {
@@ -298,4 +306,8 @@ section .load-more:hover {
   border: 1px solid #f09d51;
   transition: all 0.3s linear;
   cursor: pointer;
+}
+.card-overlay .cart .cart-footer button:hover {
+  opacity: 0.4;
+  filter: alpha(opacity=40);
 }/*# sourceMappingURL=main.css.map */

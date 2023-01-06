@@ -15,6 +15,7 @@ var Filter={
     Status:{
         amount:[],
         cards:[],
+        newProduct:[],
         products:[],
         limit:30,
         skip:0,
@@ -27,10 +28,6 @@ var Filter={
                 localStorage.setItem("cardlist",JSON.stringify([]))
             }else{
                 Filter.Status.cards=cardlist;
-                Filter.Status.cards.forEach((item,index) => {
-                    Filter.Actions.addCart(item,index)
-                   
-                });
             }
         },
 
@@ -42,24 +39,22 @@ var Filter={
             const url="https://dummyjson.com/products?limit="+limit+"&skip="+skip;
             Filter.Actions.getProducts(url);
         },
-
         showCart:()=>{
             console.log("fjfkj")
             Filter.Elements.cardOverlay.style.visibility = "visible"
             Filter.Elements.cart.style.transform = "none";
+            Filter.Status.cards.forEach((item,index) => {
+                    Filter.Actions.addCart(item,index)
+                });
         },
-
         addAmount:(item,index)=>{
-           
             var amount=Number(item.parentElement.children[1].innerText);
             amount=(amount+1).toString();
             item.parentElement.children[1].innerText=amount;
             Filter.Status.cards[index].amount=amount;
             localStorage.setItem("cardlist",JSON.stringify(Filter.Status.cards))
             Filter.Actions.addCart(Filter.Status.cards)
-          
         },
-
         reduceAmount:(item,index)=>{
             var amount=Number(item.parentElement.children[1].innerText);
             amount=(amount-1).toString();
@@ -70,20 +65,18 @@ var Filter={
             Filter.Actions.addCart(Filter.Status.cards)
         };
         },
-
         remove:(item,index)=>{
-            
             Filter.Status.cards.splice(index,1)
             localStorage.setItem("cardlist",JSON.stringify(Filter.Status.cards))
             Filter.Actions.addCart(Filter.Status.cards)
         },
-
         clearCart:()=>{
             Filter.Status.cards=[];
             localStorage.setItem("cardlist",JSON.stringify(Filter.Status.cards))
+            Filter.Actions.addCart( Filter.Status.cards)
             Filter.Actions.closeCard();
+            
         },
-
         addCart:(array)=>{
             var total=0;
             Filter.Elements.cardOverlay.style.visibility = "visible"
@@ -118,7 +111,7 @@ var Filter={
            
         },
         controlCart:(item,index)=>{
-            
+           debugger
            var boolean=true;
            Filter.Status.cards.forEach(x=>{
                 if(x.id == item.id){
@@ -148,13 +141,24 @@ var Filter={
             Filter.Elements.cart.style.transform =" translateX(100%)"
         },
 
+        mouseOver:(item)=>{
+            console.log(item)
+            item.children[1].style.transform="none";
+            item.children[0].classList.add("transparan")
+        },
+
+        mouseOut:(item)=>{
+            item.children[1].style.transform="translateX(101%)";
+            item.children[0].classList.remove("transparan")
+        },
+
         addToHTML:(array)=>{
-            
+            Filter.Elements.productCenter.innerHTML="";
             array.forEach((item,index) => {
                 var product=`
             <article class="product">
-            <div class="img-container">
-                <img id="${item.id}" src="${item.thumbnail}" class="product-img" alt="product">
+            <div class="img-container" onmouseover="Filter.Actions.mouseOver(this)"  onmouseout="Filter.Actions.mouseOut(this)" class="product-img" alt="product">
+                <img id="${item.id}" src="${item.thumbnail}" >
                  <button id=${item.id} class="bag-btn" data-id="1" onclick=Filter.Actions.controlCart(this,${index})>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-fill" viewBox="0 0 16 16">
                         <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
@@ -171,14 +175,18 @@ var Filter={
             
         },
         getProducts:(url)=>{
+            Filter.Status.newProduct=[]
             fetch(url)
             .then(res => res.json())
             .then(res=>{
-                    Filter.Status.products=(res.products)
+               
+                    Filter.Status.newProduct=(res.products)
+                    Filter.Status.products=Filter.Status.products.concat(Filter.Status.newProduct)
                     Filter.Actions.addToHTML(Filter.Status.products);
                 });
            
         }
+       
     }
 }
 Filter.Actions.init()
