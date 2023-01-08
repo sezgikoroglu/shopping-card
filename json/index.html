@@ -33,15 +33,12 @@
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" onclick="Filter.Actions.reset()" href="#" >Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Link</a>
-                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                                 aria-expanded="false">
                                 Categories
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-dark">
+                            <ul class="dropdown-menu dropdown-menu-dark ctg">
                                 <li><a class="dropdown-item" href="#">Smartphones</a></li>
                                 <li><a class="dropdown-item" href="#">Laptops</a></li>
                                 <li><a class="dropdown-item" href="#">Fragrances</a></li>
@@ -65,6 +62,20 @@
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
+                                <!-- <li><a class="dropdown-item" href="#"  onclick="Filter.Actions.reset()">Something else here</a></li> -->
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="sort-by" href="#" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Sort By
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark sort">
+                                <li role="option" aria-labelledby="price-low"><a class="dropdown-item" href="#">Price: Low to High</a></li>
+                                <li role="option" aria-labelledby="price-high"><a class="dropdown-item" href="#">Price: High to Low</a></li>
+                                <li role="option" aria-labelledby="rating"><a class="dropdown-item" href="#">Rating</a></li>
+                                <li role="option" aria-labelledby="discount"><a class="dropdown-item" href="#">DiscountPercentage: High to Low</a></li>
+                                
                                 <!-- <li><a class="dropdown-item" href="#"  onclick="Filter.Actions.reset()">Something else here</a></li> -->
                             </ul>
                         </li>
@@ -95,6 +106,23 @@
     <section>
         <h2 class="section-title">Our Products</h2>
         <div class="product-center">
+
+        </div>
+        <div class="ctg-product-center">
+            <!-- <div class="ctg-product">
+                <div class="ctg-product-div">
+                    <img src="images/product-1.jpeg" alt="">
+                    <div class="ctg-content">
+                        <div class="ctg-title">Iphone 9</div>
+                        <div class="ctg-rating">10yıldız
+                            
+                        </div>
+                        <div class="ctg-discount">25%</div>
+                        <div class="ctg-price">10$</div>
+                    </div>
+                </div>
+            </div> -->
+           
         </div>
         <button class="load-more" onclick="Filter.Actions.loadMore()">Load More</button>
     </section>
