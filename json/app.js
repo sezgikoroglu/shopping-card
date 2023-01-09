@@ -13,8 +13,9 @@ var Filter={
         loadMore:document.querySelector(".load-more"),
         offCanvas:document.querySelector(".offcanvas"),
         sectionTitle:document.querySelector(".section-title"),
-        ctgProductCenter:document.querySelector(".ctg-product-center")
-        
+        ctgProductCenter:document.querySelector(".ctg-product-center"),
+        sortBy:document.querySelector("#sort-by"),
+        sayac:document.querySelector(".sayac")
     },
     Apis:{
         products:"https://dummyjson.com/products",
@@ -30,7 +31,7 @@ var Filter={
     },
     Actions:{
         init:()=>{
-
+           
             Filter.Actions.getProducts(Filter.Apis.products);
             const cardlist=JSON.parse(localStorage.getItem("cardlist"));
             if (!cardlist){
@@ -38,15 +39,17 @@ var Filter={
             }else{
                 Filter.Status.cards=cardlist;
             }
+            Filter.Actions.getBagButtons()
+            Filter.Actions.editAmount()
         },
        
         reset:()=>{
             Filter.Actions.addToHTML(Filter.Status.products);
             Filter.Elements.header.style.display="flex";
             Filter.Elements.loadMore.style.display="flex";
-            Filter.Elements.sectionTitle.innerHTML="Our Products"
-            Filter.Elements.ctgProductCenter.display="none"
-
+            Filter.Elements.sectionTitle.innerHTML="Our Products";
+            Filter.Elements.ctgProductCenter.style.display="none";
+            
         },
         firstCharUpper:(x)=>{
             var text=x.replaceAll("-", " ");
@@ -88,20 +91,24 @@ var Filter={
         remove:(item,index)=>{
             
             var i=item.getAttribute("data-id")
+            console.log(i)
             Filter.Status.cards.splice(index,1)
+            console.log(Filter.Status.cards)
             localStorage.setItem("cardlist",JSON.stringify(Filter.Status.cards))
+            Filter.Actions.getBagButtons()
             Filter.Actions.addCart(Filter.Status.cards,i)
+            
         },
         clearCart:()=>{
             Filter.Status.cards=[];
             localStorage.setItem("cardlist",JSON.stringify(Filter.Status.cards))
-            Filter.Actions.addCart( Filter.Status.cards)
+            Filter.Actions.addCart(Filter.Status.cards)
+            Filter.Actions.getBagButtons();
             Filter.Actions.closeCard();
             
         },
         addCart:(array,id)=>{
             var total=0;
-            
             Filter.Elements.cardOverlay.style.visibility = "visible"
             Filter.Elements.cart.style.transform = "none";
             Filter.Elements.cartContent.innerHTML="";
@@ -131,39 +138,62 @@ var Filter={
             Filter.Elements.cartContent.innerHTML+=div;
             })
             Filter.Elements.total.innerText=total;
+            Filter.Actions.editAmount()
+            
            
+        },
+        editAmount:()=>{
+            var totalAmount=0;
+            Filter.Status.cards.forEach(x=>{
+                totalAmount+=x.amount;
+            })
+            Filter.Elements.sayac.innerText=totalAmount;
         },
         controlCart:(item,index)=>{
-           var id=item.id
-           var boolean=true;
-           Filter.Status.cards.forEach(x=>{
-                if(x.id == item.id){
-                    boolean=false;
-                }
-           })
-           if(boolean){
-            var i=Number(item.id)-1
-            var product=Filter.Status.products[i];
-            Filter.Status.cards.push(product);
-            Filter.Status.cards.forEach(item=>{
-                item.amount=1;
-            })
-            item.children[1].innerHTML="IN CARD";
-            item.disabled=true;
-            localStorage.setItem("cardlist",JSON.stringify(Filter.Status.cards))
-            Filter.Actions.addCart(Filter.Status.cards,id)
+            
+            console.log(item)
+            var dataId=item.getAttribute("data-id")
+            var boolean=true;
+            console.log(Filter.Status.cards.length)
+            if(Filter.Status.cards!=null){
+                Filter.Status.cards.forEach(x=>{
+                    boolean=(x.id==dataId)? false : true;
+                })
            
-           }else{
-           
-            alert("Ürün zaten sepetinizde bulunmaktadır.")
-           }
-           
-           
+            if(boolean){
+                //Filter.Actions.changeButtonText(dataId)
+                var cardItem=Filter.Status.products[index];
+                Filter.Status.cards.push(cardItem)
+                Filter.Status.cards.forEach(item=>{
+                    item.amount=1;
+                })
+                localStorage.setItem("cardlist",JSON.stringify(Filter.Status.cards))
+                Filter.Actions.addCart(Filter.Status.cards,dataId)
+                Filter.Actions.getBagButtons()
+            }
+        }
+
         },
+
+        getBagButtons:()=>{
+          
+                console.log("change buttonda")
+                buttons=document.querySelectorAll(".bag-btn ")
+                buttons.forEach(x=>{
+                    let dataId=x.getAttribute("data-id")
+                    let inCart=Filter.Status.cards.find(item => item.id==dataId)
+                    if(inCart){
+                        x.innerText="IN CARD";
+                        x.disabled=true;
+                    }
+                })
+               
+        },
+
         ctgHtml:()=>{
             Filter.Elements.header.style.display="none";
             Filter.Elements.loadMore.style.display="none";
-
+            Filter.Elements.sortBy.style.display="block";
         },
         selectCtg:(e)=>{
             Filter.Actions.ctgHtml()
@@ -193,25 +223,27 @@ var Filter={
         },
 
         sortBy:(e)=>{
+           
             var x=(e.target.parentElement)
             x=x.getAttribute("aria-labelledby")
             if(x==="price-low"){
-                var arr=Filter.Status.products.sort(function(a,b){return a.price-b.price})
-                Filter.Actions.addToHTML(arr)
+                var arr=Filter.Status.categories.sort((a,b)=>{return a.price-b.price})
+                Filter.Actions.addToCtgHTML(arr)
             }
             else if(x=="price-high"){
-                var arr=Filter.Status.products.sort(function(a,b){return b.price-a.price})
-                Filter.Actions.addToHTML(arr)
+                var arr=Filter.Status.categories.sort((a,b)=>{return b.price-a.price})
+                Filter.Actions.addToCtgHTML(arr)
             }
             else if(x=="rating"){
-                var arr=Filter.Status.products.sort(function(a,b){return a.rating-b.rating})
-                Filter.Actions.addToHTML(arr)
+                var arr=Filter.Status.categories.sort((a,b)=>{return b.rating-a.rating})
+                Filter.Actions.addToCtgHTML(arr)
             }
             else if(x=="discount"){
-                var arr=Filter.Status.products.sort(function(a,b){return b.discount-a.discount})
-                Filter.Actions.addToHTML(arr)
+                var arr=Filter.Status.categories.sort((a,b)=>{return b.discount-a.discount})
+                Filter.Actions.addToCtgHTML(arr)
             }
             Filter.Actions.ctgHtml()
+           
         },
 
         addToHTML:(array)=>{
@@ -223,7 +255,7 @@ var Filter={
             <article class="product">
             <div class="img-container" onmouseover="Filter.Actions.mouseOver(this)"  onmouseout="Filter.Actions.mouseOut(this)" class="product-img" alt="product">
                 <img id="${item.id}" src="${item.thumbnail}" >
-                 <button id=${item.id} class="bag-btn" data-id="1" onclick=Filter.Actions.controlCart(this,${index})>
+                 <button  class="bag-btn" data-id="${item.id}" onclick=Filter.Actions.controlCart(this,${index})>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-fill" viewBox="0 0 16 16">
                         <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
                     </svg>
@@ -234,21 +266,26 @@ var Filter={
             <h4>${item.price}$</h4>
             </article>
             `
+            
             Filter.Elements.productCenter.innerHTML+=product;
             });
-            
+            Filter.Actions.getBagButtons()
+            Filter.Elements.sortBy.style.display="none";
         },
+       
         addToCtgHTML:(array)=>{
             console.log("addto da")
             Filter.Elements.productCenter.style.display="none";
             Filter.Elements.ctgProductCenter.innerHTML="";
                 array.forEach((item,index) => {
+                const ratingPercentage=((item.rating)/5)*100;//4.43
+                const ratingPercentageRounded=`${Math.round(ratingPercentage/10)*10}%`
                 var product=`
                  <div class="ctg-product">
                     <div class="ctg-product-div">
                         <div class="img-div" onmouseover="Filter.Actions.mouseOver(this)"  onmouseout="Filter.Actions.mouseOut(this)">
                             <img id="${item.id}" src="${item.thumbnail}">
-                            <button id=${item.id} class="bag-btn" data-id="1" onclick=Filter.Actions.controlCart(this,${index})>
+                            <button data-id=${item.id} class="bag-btn" data-id="1" onclick=Filter.Actions.controlCart(this,${item.id-1})>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-fill" viewBox="0 0 16 16">
                                     <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
                                 </svg>
@@ -257,19 +294,24 @@ var Filter={
                         </div>
                         <div class="ctg-content">
                             <div class="ctg-title">${item.title}</div>
-                            <div class="ctg-desc">${item.description}</div>
-                            <div class="ctg-rating">${item.rating}</div>
+                            <div class="ctg-desc">${item.description}%</div>
+                            <div class="star-out">
+                            <div class="star-inner" style="width:${ratingPercentageRounded}">
+                            </div>
+                            </div>
                             <div class="ctg-discount">${item.discountPercentage}</div>
                             <div class="ctg-price">${item.price}$</div>
                         </div>
                     </div>
                 </div>
-             `
-             Filter.Elements.ctgProductCenter.innerHTML+=product;
+             `  
+                Filter.Actions.getBagButtons();
+                Filter.Elements.ctgProductCenter.innerHTML+=product;
+                Filter.Elements.ctgProductCenter.style.display="grid";
              });
             
         },
-        
+     
         getCategory:(url)=>{
            
             Filter.Status.categories=[];

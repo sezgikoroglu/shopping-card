@@ -41,15 +41,30 @@ main, header, aside, img {
 }
 
 .navbar {
-  position: fixed;
   background-color: rgb(231, 226, 221);
   top: 0;
   right: 0;
   left: 0;
   height: 60px;
+  position: -webkit-sticky;
+  position: sticky;
+  z-index: 1;
 }
 .navbar .container-fluid {
   padding: 0 1.5rem;
+}
+.navbar .container-fluid .basket-logo .sayac {
+  position: absolute;
+  width: 20px;
+  top: -8px;
+  height: 20px;
+  right: -8px;
+  z-index: 2;
+  background: #f09d51;
+  padding: 0 5px;
+  border-radius: 30%;
+  display: flex;
+  justify-content: center;
 }
 .navbar .container-fluid .basket-logo svg {
   cursor: pointer;
