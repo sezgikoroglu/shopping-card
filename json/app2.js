@@ -8,7 +8,9 @@ var ProductFilter={
        smallImgDiv:document.querySelector(".smallImgDiv"),
        productImg:document.querySelector(".product-img"),
        progress:document.querySelector(".progress"),
-       contentWrapper:document.querySelector(".content-wrapper")
+       contentWrapper:document.querySelector(".content-wrapper"),
+       closeBtn:document.querySelector("#close"),
+       modal:document.querySelector(".modal1")
     },
 
     Status:{
@@ -19,10 +21,17 @@ var ProductFilter={
     
     Actions:{
 
-        init:()=>{
+
+        openModal:(id)=>{
+          
             ProductFilter.Status.index=0;
-            ProductFilter.Actions.getProduct()
+            ProductFilter.Actions.getProduct(id)
             
+        },
+
+        close:()=>{
+            console.log()
+            ProductFilter.Elements.modal.style.display="none"
         },
 
         addToIMG:(res)=>{
@@ -98,7 +107,7 @@ var ProductFilter={
                 }
             })
             ProductFilter.Actions.addToIMG(ProductFilter.Status.images)
-
+            ProductFilter.Elements.modal.display="flex"
         },
 
         goLeft:()=>{
@@ -120,14 +129,15 @@ var ProductFilter={
 
         },
 
-        getProduct:()=>{
+        getProduct:(id)=>{
+           
+            var url=`https://dummyjson.com/products/${id}`
             console.log("fdsg")
-            const urlParams=new URLSearchParams(window.location.search);
-            const id=urlParams.get("id");
             console.log(id)
-            fetch(`https://dummyjson.com/products/${id}`)
+            fetch(url)
                 .then(res => res.json())
                 .then(res=>{
+                    console.log(res)
                     ProductFilter.Status.length=res.images.length;
                     ProductFilter.Status.images=(res.images)
                     ProductFilter.Actions.addToIMG(res.images)
@@ -135,6 +145,8 @@ var ProductFilter={
                     ProductFilter.Actions.addToSmallImg(res.images)
                     ProductFilter.Actions.addToInfo(res)
                     ProductFilter.Actions.list()
+                   
+
                 }
                     
                 );
@@ -142,5 +154,3 @@ var ProductFilter={
     }
    
 }
-
-ProductFilter.Actions.init()

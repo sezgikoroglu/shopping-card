@@ -176,8 +176,6 @@ var Filter={
         },
 
         getBagButtons:()=>{
-          
-                console.log("change buttonda")
                 buttons=document.querySelectorAll(".bag-btn ")
                 buttons.forEach(x=>{
                     let dataId=x.getAttribute("data-id")
@@ -254,7 +252,7 @@ var Filter={
                 var product=`
             <article class="product">
             <div class="img-container" onmouseover="Filter.Actions.mouseOver(this)"  onmouseout="Filter.Actions.mouseOut(this)" class="product-img" alt="product">
-                <a href="productDetail.html?id=${item.id}" data-bs-toggle="modal" data-bs-target="#form"> <img id="${item.id}" src="${item.thumbnail}" ></a>
+                <a href=""> <img id="${item.id}" src="${item.thumbnail}" ></a>
                  <button  class="bag-btn" data-id="${item.id}" onclick=Filter.Actions.controlCart(this,${index})>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-fill" viewBox="0 0 16 16">
                         <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
@@ -268,7 +266,13 @@ var Filter={
             `
             
             Filter.Elements.productCenter.innerHTML+=product;
-            });
+            document.querySelectorAll(".img-container").forEach(x=>x.addEventListener("click",(e)=>{
+                e.preventDefault()
+                ProductFilter.Actions.openModal(item.id)
+            }))
+            
+        
+        });
             Filter.Actions.getBagButtons()
             Filter.Elements.sortBy.style.display="none";
         },
@@ -284,7 +288,7 @@ var Filter={
                  <div class="ctg-product">
                     <div class="ctg-product-div">
                         <div class="img-div" onmouseover="Filter.Actions.mouseOver(this)"  onmouseout="Filter.Actions.mouseOut(this)">
-                            <a href="productDetail.html?id=${item.id}"> <img id="${item.id}" src="${item.thumbnail}"></a>
+                            <a href="" onclick="ProductFilter.Actions.openModal(${item.id})"> <img id="${item.id}" src="${item.thumbnail}"></a>
                             <button data-id=${item.id} class="bag-btn" data-id="1" onclick=Filter.Actions.controlCart(this,${item.id-1})>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-fill" viewBox="0 0 16 16">
                                     <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
@@ -349,3 +353,159 @@ Filter.Elements.dropDownItemSort.forEach(item=>{
 })
 Filter.Actions.init()
 
+var ProductFilter={
+    Elements:{
+       imgDiv:document.querySelector(".imgDiv"),
+       progress:document.querySelector(".progress-div"),
+       leftArrow:document.querySelector(".left-arrow"),
+       rightArrow:document.querySelector(".right-arrow"),
+       progressDiv:document.querySelector(".progress-div"),
+       smallImgDiv:document.querySelector(".smallImgDiv"),
+       productImg:document.querySelector(".product-img"),
+       progress:document.querySelector(".progress"),
+       contentWrapper:document.querySelector(".content-wrapper"),
+       closeBtn:document.querySelector("#close"),
+       modal:document.querySelector(".modal1")
+    },
+
+    Status:{
+        index:0,
+        length:0,
+        images:[],
+    },
+    
+    Actions:{
+
+
+        openModal:(id)=>{
+            console.log("fnjasdddddddf")
+            ProductFilter.Status.index=0;
+            ProductFilter.Actions.getProduct(id)
+            
+        },
+
+        close:()=>{
+            console.log("dsgdghsd")
+            ProductFilter.Elements.modal.style.display="none"
+        },
+
+        addToIMG:(res)=>{
+           
+                ProductFilter.Elements.productImg.innerHTML="";
+                var img=document.createElement("img");
+                img.setAttribute("src",res[ProductFilter.Status.index])
+                
+                ProductFilter.Elements.productImg.appendChild(img)
+        },
+
+        addToProgrees:(res)=>{
+                res.forEach((x,index)=>{
+                    var div=document.createElement("div")
+                    div.classList.add("progress-div")
+                    div.classList.add("passive")
+                    ProductFilter.Elements.progress.appendChild(div)
+                })
+
+                
+        },
+
+        addToSmallImg:(res)=>{
+            ProductFilter.Elements.smallImgDiv.innerHTML="";
+            res.forEach((x,index)=>{
+                var img=document.createElement("img");
+                img.setAttribute("src",x)
+                img.classList.add("passive")
+                // img.addEventListener("mouseover",(index)=>{
+                //     ProductFilter.Status.index=index;
+                //     ProductFilter.Actions.list()
+                // });
+                ProductFilter.Elements.smallImgDiv.appendChild(img) });
+
+        },
+
+        addToInfo:(res)=>{
+            ProductFilter.Elements.contentWrapper.innerHTML="";
+            const ratingPercentage=((res.rating)/5)*100;//4.43
+            const ratingPercentageRounded=`${Math.round(ratingPercentage/10)*10}%`
+            var div=
+              ` <h3>${res.title}</h3>
+                <p>${res.description}</p>
+                <div class="star-out">
+                  <div class="star-inner" style="width:${ratingPercentageRounded}">
+                  </div>
+                </div>
+                <p>${res.discountPercentage}</p>
+                <p>${res.price}$</p>
+                `
+                ProductFilter.Elements.contentWrapper.innerHTML=div
+        },
+
+        list:()=>{
+            var progressList=document.querySelectorAll(".progress-div");
+            var smallImages=document.querySelectorAll(".smallImgDiv img")
+            progressList.forEach((x,index)=>{
+                    if (index===(ProductFilter.Status.index)){
+                        x.classList.remove("passive")
+                        x.classList.add("active")
+
+                    }
+                    else{
+                        x.classList.add("passive")
+                    }
+            });
+            smallImages.forEach((x,index)=>{
+                if (index===(ProductFilter.Status.index)){
+                    x.classList.remove("passive")
+                }
+                else{
+                    x.classList.add("passive")
+                }
+            })
+            ProductFilter.Actions.addToIMG(ProductFilter.Status.images)
+            ProductFilter.Elements.modal.display="flex"
+        },
+
+        goLeft:()=>{
+            ProductFilter.Status.index--;
+            if(ProductFilter.Status.index<0){
+                ProductFilter.Status.index=ProductFilter.Status.length;
+            }
+            
+            ProductFilter.Actions.list()
+        },
+
+        goRight:()=>{
+            ProductFilter.Status.index++;
+            if(ProductFilter.Status.index==ProductFilter.Status.length){
+                ProductFilter.Status.index=0;
+            }
+           
+            ProductFilter.Actions.list()
+
+        },
+
+        getProduct:(id)=>{
+           
+            var url=`https://dummyjson.com/products/${id}`
+            console.log("fdsg")
+            console.log(id)
+            fetch(url)
+                .then(res => res.json())
+                .then(res=>{
+                    console.log(res)
+                    ProductFilter.Status.length=res.images.length;
+                    ProductFilter.Status.images=(res.images)
+                    ProductFilter.Actions.addToIMG(res.images)
+                    ProductFilter.Actions.addToProgrees(res.images)
+                    ProductFilter.Actions.addToSmallImg(res.images)
+                    ProductFilter.Actions.addToInfo(res)
+                    ProductFilter.Actions.list()
+                    ProductFilter.Elements.modal.style.display="flex"
+
+                }
+                    
+                );
+        }
+    }
+   
+}
