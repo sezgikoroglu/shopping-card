@@ -1,12 +1,11 @@
 
     .navbar {
-      
+        position: sticky !important;
         background-color: rgb(231, 226, 221);
         top: 0;
         right: 0;
         left: 0;
         height: 60px;
-        position: sticky;
         z-index: 1;
       
         .container-fluid {
